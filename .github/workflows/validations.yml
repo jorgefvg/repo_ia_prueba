@@ -37,11 +37,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Instalar dependencias
+      - name: Instalar dependencias para pruebas
         run: |
-          pip install pytest coverage
+          pip install pytest
 
-      - name: Ejecutar tests con coverage
-        run: |
-          coverage run -m pytest
-          coverage report
+      - name: Ejecutar pruebas y generar reporte JUnit
+        run: pytest -v --junitxml=pytest-report.xml
+
+      - name: Publicar resultados de pruebas en GitHub
+        uses: dorny/test-reporter@v1
+        with:
+          name: pytest
+          path: pytest-report.xml
+          reporter: junit
